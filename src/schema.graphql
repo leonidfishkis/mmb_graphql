@@ -1,0 +1,38 @@
+type Query {
+  user(id: Int!): User
+  users: [User!]!
+  raid(id: Int!): Raid
+  raids: [Raid!]!
+  isAuthenticate: Boolean!
+  isAdmin: Boolean!
+}
+
+type Mutation {
+  login(email: String!, password: String!): AuthPayload
+}
+
+
+enum RaidState {
+  Create
+  Open
+  Close
+}
+
+type AuthPayload {
+  token: String
+  user: User
+}
+
+
+type User {
+  id: Int!
+  name: String!
+  email: String!
+}
+
+
+type Raid {
+  id: Int!
+  name: String!
+}
+

@@ -1,0 +1,517 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model ACRA {
+  date                  DateTime  @default(now()) @db.Timestamp(0)
+  REPORT_ID             String    @id @db.Char(36)
+  APP_VERSION_CODE      Int?      @db.UnsignedSmallInt
+  APP_VERSION_NAME      String?   @db.VarChar(16)
+  PACKAGE_NAME          String?   @db.VarChar(64)
+  FILE_PATH             String?   @db.VarChar(128)
+  PHONE_MODEL           String?   @db.VarChar(32)
+  BRAND                 String?   @db.VarChar(32)
+  PRODUCT               String?   @db.VarChar(32)
+  ANDROID_VERSION       String?   @db.Char(8)
+  BUILD                 String?   @db.Text
+  TOTAL_MEM_SIZE        BigInt?
+  AVAILABLE_MEM_SIZE    BigInt?
+  CUSTOM_DATA           String?   @db.Text
+  STACK_TRACE           String?   @db.Text
+  INITIAL_CONFIGURATION String?   @db.Text
+  CRASH_CONFIGURATION   String?   @db.Text
+  DISPLAY               String?   @db.Text
+  USER_APP_START_DATE   DateTime? @db.DateTime(0)
+  USER_CRASH_DATE       DateTime? @db.DateTime(0)
+  LOGCAT                String?   @db.Text
+  EVENTSLOG             String?   @db.Text
+  RADIOLOG              String?   @db.Text
+  INSTALLATION_ID       String?   @db.Char(36)
+  DEVICE_FEATURES       String?   @db.Text
+  ENVIRONMENT           String?   @db.Text
+  SETTINGS_SYSTEM       String?   @db.Text
+  SETTINGS_SECURE       String?   @db.Text
+  SETTINGS_GLOBAL       String?   @db.Text
+  THREAD_DETAILS        String?   @db.Text
+  BUILD_CONFIG          String?   @db.Text
+}
+
+model Devices {
+  device_id        Int                @id @default(autoincrement())
+  device_name      String             @db.VarChar(100)
+  user_id          Int
+  Users            Users              @relation(fields: [user_id], references: [user_id])
+  TeamLevelDismiss TeamLevelDismiss[]
+
+  @@index([user_id], name: "user_id")
+}
+
+model Distances {
+  distance_id         Int                   @id @default(autoincrement())
+  distance_name       String                @db.VarChar(50)
+  raid_id             Int
+  distance_data       String?               @db.VarChar(50)
+  distance_resultlink String?               @db.VarChar(150)
+  distance_hide       Int                   @default(0)
+  distance_length     Int?
+  distance_rankcoeff  Float?                @db.Float
+  Raids               Raids                 @relation(fields: [raid_id], references: [raid_id])
+  LevelPointDiscounts LevelPointDiscounts[]
+  LevelPoints         LevelPoints[]
+  Teams               Teams[]
+
+  @@index([raid_id], name: "raid_id")
+}
+
+model Errors {
+  error_id     Int    @id
+  error_name   String @db.VarChar(100)
+  error_manual Int
+}
+
+model FileTypes {
+  filetype_id   Int         @id @default(autoincrement())
+  filetype_name String      @db.VarChar(100)
+  RaidFiles     RaidFiles[]
+}
+
+model InvitationDeliveries {
+  invitationdelivery_id     Int                     @id @default(autoincrement())
+  raid_id                   Int
+  invitationdelivery_type   Int
+  invitationdelivery_dt     DateTime                @db.DateTime(0)
+  user_id                   Int
+  invitationdelivery_amount Int
+  InvitationDeliveryTypes   InvitationDeliveryTypes @relation(fields: [invitationdelivery_type], references: [invitationdeliverytype_id])
+  Raids                     Raids                   @relation(fields: [raid_id], references: [raid_id])
+  Users                     Users                   @relation(fields: [user_id], references: [user_id])
+  Invitations               Invitations[]
+
+  @@index([invitationdelivery_type], name: "invitationdelivery_type")
+  @@index([raid_id], name: "raid_id")
+  @@index([user_id], name: "user_id")
+}
+
+model InvitationDeliveryTypes {
+  invitationdeliverytype_id   Int                    @id @default(autoincrement())
+  invitationdeliverytype_name String                 @db.VarChar(100)
+  InvitationDeliveries        InvitationDeliveries[]
+}
+
+model Invitations {
+  invitation_id         Int                  @id @default(autoincrement())
+  user_id               Int
+  invitation_begindt    DateTime             @db.DateTime(0)
+  invitation_enddt      DateTime             @db.DateTime(0)
+  invitationdelivery_id Int
+  InvitationDeliveries  InvitationDeliveries @relation(fields: [invitationdelivery_id], references: [invitationdelivery_id])
+  Users                 Users                @relation(fields: [user_id], references: [user_id])
+
+  @@index([invitationdelivery_id], name: "invitationdelivery_id")
+  @@index([user_id], name: "user_id")
+}
+
+model LevelPointDiscounts {
+  levelpointdiscount_id     Int         @id @default(autoincrement())
+  levelpointdiscount_hide   Int
+  distance_id               Int
+  levelpointdiscount_value  Int
+  levelpointdiscount_start  Int
+  levelpointdiscount_finish Int
+  levelpoint_id             Int         @unique
+  Distances                 Distances   @relation(fields: [distance_id], references: [distance_id])
+  LevelPoints               LevelPoints @relation(fields: [levelpoint_id], references: [levelpoint_id])
+
+  @@index([distance_id], name: "distance_id")
+}
+
+model LevelPoints {
+  levelpoint_id          Int                  @id @default(autoincrement())
+  levelpoint_name        String               @db.VarChar(50)
+  pointtype_id           Int
+  levelpoint_order       Int
+  levelpoint_hide        Int                  @default(0)
+  distance_id            Int?
+  levelpoint_penalty     Int?
+  levelpoint_mindatetime DateTime?            @db.DateTime(0)
+  levelpoint_maxdatetime DateTime?            @db.DateTime(0)
+  scanpoint_id           Int?
+  level_id               Int?
+  Distances              Distances?           @relation(fields: [distance_id], references: [distance_id])
+  PointTypes             PointTypes           @relation(fields: [pointtype_id], references: [pointtype_id])
+  LevelPointDiscounts    LevelPointDiscounts?
+  TeamLevelDismiss       TeamLevelDismiss[]
+  TeamLevelPoints        TeamLevelPoints[]
+
+  @@index([distance_id], name: "distance_id")
+  @@index([levelpoint_order], name: "levelpoint_order")
+  @@index([pointtype_id], name: "pointtype_id")
+}
+
+model LinkTypes {
+  linktype_id       Int         @id @default(autoincrement())
+  linktype_name     String      @db.VarChar(50)
+  linktype_hide     Int
+  linktype_textonly Int
+  linktype_order    Int
+  UserLinks         UserLinks[]
+}
+
+model Logs {
+  logs_id        Int             @id @default(autoincrement())
+  logs_dt        DateTime        @default(now()) @db.Timestamp(0)
+  logs_level     Logs_logs_level @default(critical)
+  user_id        Int?
+  logs_duration  Int?
+  logs_operation String?         @db.TinyText
+  logs_message   String?         @db.Text
+
+  @@index([logs_level], name: "logs_level")
+  @@index([user_id], name: "user_id")
+}
+
+model PointTypes {
+  pointtype_id   Int           @id @default(autoincrement())
+  pointtype_name String        @db.VarChar(50)
+  LevelPoints    LevelPoints[]
+}
+
+model RaidDevelopers {
+  raiddeveloper_id   Int     @id @default(autoincrement())
+  raid_id            Int
+  user_id            Int
+  raiddeveloper_hide Boolean @default(false)
+  Raids              Raids   @relation(fields: [raid_id], references: [raid_id])
+  Users              Users   @relation(fields: [user_id], references: [user_id])
+
+  @@index([raid_id], name: "raid_id")
+  @@index([user_id], name: "user_id")
+}
+
+model RaidFiles {
+  raidfile_id         Int       @id @default(autoincrement())
+  raid_id             Int
+  raidfile_mimetype   String    @db.VarChar(50)
+  filetype_id         Int
+  raidfile_binarydata Bytes?    @db.Blob
+  raidfile_textdata   String?   @db.Text
+  raidfile_name       String    @db.VarChar(50)
+  raidfile_uploaddt   DateTime  @db.DateTime(0)
+  raidfile_comment    String?   @db.VarChar(50)
+  raidfile_hide       Int
+  FileTypes           FileTypes @relation(fields: [filetype_id], references: [filetype_id])
+  Raids               Raids     @relation(fields: [raid_id], references: [raid_id])
+
+  @@index([filetype_id], name: "filetype_id")
+  @@index([raid_id], name: "raid_id")
+}
+
+model RaidModerators {
+  raidmoderator_id   Int     @id @default(autoincrement())
+  raid_id            Int
+  user_id            Int
+  raidmoderator_hide Boolean @default(false)
+  Raids              Raids   @relation(fields: [raid_id], references: [raid_id])
+  Users              Users   @relation(fields: [user_id], references: [user_id])
+
+  @@index([raid_id], name: "raid_id")
+  @@index([user_id], name: "user_id")
+}
+
+model RaidStatuses {
+  status_id          Int    @id @default(autoincrement())
+  status_name        String @db.VarChar(50)
+  status_description String @db.VarChar(200)
+  status_order       Int
+  status_oldnum      Int
+}
+
+model Raids {
+  raid_id                       Int                    @id @default(autoincrement())
+  raid_name                     String                 @unique @db.VarChar(50)
+  raid_period                   String                 @db.VarChar(50)
+  raid_startpoint               String?                @db.VarChar(50)
+  raid_finishpoint              String?                @db.VarChar(50)
+  raid_ruleslink                String?                @db.VarChar(50)
+  raid_startlink                String?                @db.VarChar(100)
+  raid_folder                   String?                @db.VarChar(50)
+  raid_registrationenddate      DateTime?              @db.Date
+  raid_closedate                DateTime?              @db.Date
+  raid_znlink                   String?                @db.VarChar(100)
+  raid_kpwptlink                String?                @db.VarChar(100)
+  raid_legendlink               String?                @db.VarChar(100)
+  raid_ziplink                  String?                @db.VarChar(100)
+  raid_noshowresult             Int?
+  raid_fileprefix               String?                @db.Char(10)
+  raid_readonlyhoursbeforestart Int?
+  raid_mapprice                 Int?
+  raid_notstartfee              Int?
+  raid_nostartprice             Int?
+  raid_teamslimit               Int                    @default(0)
+  raid_btpin                    String?                @db.VarChar(16)
+  Distances                     Distances[]
+  InvitationDeliveries          InvitationDeliveries[]
+  RaidDevelopers                RaidDevelopers[]
+  RaidFiles                     RaidFiles[]
+  RaidModerators                RaidModerators[]
+  ScanPoints                    ScanPoints[]
+  UserLinks                     UserLinks[]
+}
+
+model ScanPoints {
+  scanpoint_id    Int    @id @default(autoincrement())
+  raid_id         Int
+  scanpoint_name  String @db.VarChar(50)
+  scanpoint_order Int
+  scanpoint_hide  Int
+  Raids           Raids  @relation(fields: [raid_id], references: [raid_id])
+
+  @@index([raid_id], name: "raid_id")
+}
+
+model Sessions {
+  session_id         String   @id @db.VarChar(50)
+  user_id            Int
+  connection_id      Int      @default(0)
+  session_status     Int
+  session_starttime  DateTime @db.DateTime(0)
+  session_updatetime DateTime @db.DateTime(0)
+
+  @@index([user_id], name: "user_id")
+}
+
+model SportiduinoRecords {
+  sportiduinorecord_id      Int      @id @default(autoincrement())
+  user_id                   Int
+  sportiduino_dbdate        DateTime @db.DateTime(0)
+  sportiduino_stationmac    BigInt   @db.UnsignedBigInt
+  sportiduino_stationtime   DateTime @db.DateTime(0)
+  sportiduino_stationdrift  Int
+  sportiduino_stationnumber Int      @db.UnsignedSmallInt
+  sportiduino_stationmode   Int      @db.UnsignedTinyInt
+  sportiduino_inittime      DateTime @db.DateTime(0)
+  team_num                  Int
+  sportiduino_teammask      Int      @db.UnsignedSmallInt
+  levelpoint_order          Int
+  teamlevelpoint_datetime   DateTime @db.DateTime(0)
+
+  @@unique([user_id, sportiduino_dbdate, sportiduino_stationmac, sportiduino_stationtime, sportiduino_stationdrift, sportiduino_stationnumber, sportiduino_stationmode, sportiduino_inittime, team_num, sportiduino_teammask, levelpoint_order, teamlevelpoint_datetime], name: "chip_event")
+}
+
+model SportiduinoResults {
+  sportiduinoresults_id        Int      @id @default(autoincrement())
+  sportiduinoresults_timestamp DateTime @default(now()) @db.Timestamp(0)
+  team_num                     Int
+  sportiduino_teammask         Int      @db.UnsignedSmallInt
+  levelpoint_order             Int
+  teamlevelpoint_datetime      DateTime @db.DateTime(0)
+
+  @@unique([team_num, sportiduino_teammask, levelpoint_order, teamlevelpoint_datetime], name: "result")
+}
+
+model TeamLevelDismiss {
+  teamleveldismiss_id   Int         @id @default(autoincrement())
+  teamleveldismiss_date DateTime    @default(now()) @db.Timestamp(0)
+  user_id               Int         @default(0)
+  device_id             Int         @default(1)
+  levelpoint_id         Int
+  teamuser_id           Int
+  Devices               Devices     @relation(fields: [device_id], references: [device_id])
+  LevelPoints           LevelPoints @relation(fields: [levelpoint_id], references: [levelpoint_id])
+  TeamUsers             TeamUsers   @relation(fields: [teamuser_id], references: [teamuser_id])
+
+  @@index([device_id], name: "device_id")
+  @@index([levelpoint_id], name: "levelpoint_id")
+  @@index([teamuser_id], name: "teamuser_id")
+}
+
+model TeamLevelPoints {
+  teamlevelpoint_id                      Int         @id @default(autoincrement())
+  teamlevelpoint_date                    DateTime    @default(now()) @db.Timestamp(0)
+  user_id                                Int         @default(0)
+  device_id                              Int
+  levelpoint_id                          Int
+  team_id                                Int
+  teamlevelpoint_datetime                DateTime?   @db.DateTime(0)
+  teamlevelpoint_comment                 String?     @db.VarChar(100)
+  teamlevelpoint_duration                DateTime?   @db.Time(0)
+  teamlevelpoint_penalty                 Int?
+  error_id                               Int?
+  teamlevelpoint_result                  DateTime?   @db.Time(0)
+  teamlevelpoint_datetimeaftercorrection DateTime?   @db.DateTime(0)
+  teamlevelpoint_result_old              DateTime?   @db.Time(0)
+  LevelPoints                            LevelPoints @relation(fields: [levelpoint_id], references: [levelpoint_id])
+  Teams                                  Teams       @relation(fields: [team_id], references: [team_id])
+
+  @@index([levelpoint_id], name: "levelpoint_id")
+  @@index([team_id], name: "team_id")
+}
+
+model TeamUnionLogs {
+  teamunionlog_id   Int      @id @default(autoincrement())
+  user_id           Int
+  teamunionlog_dt   DateTime @db.DateTime(0)
+  teamunionlog_hide Boolean
+  team_id           Int
+  team_parentid     Int?
+  union_status      Int
+  Teams             Teams    @relation(fields: [team_id], references: [team_id])
+  Users             Users    @relation(fields: [user_id], references: [user_id])
+
+  @@index([team_id], name: "team_id")
+  @@index([team_parentid], name: "team_parentid")
+  @@index([user_id], name: "user_id")
+}
+
+model TeamUsers {
+  teamuser_id             Int                @id @default(autoincrement())
+  team_id                 Int
+  user_id                 Int
+  teamuser_hide           Boolean            @default(false)
+  userunionlog_id         Int?
+  teamuser_rank           Decimal?           @db.Decimal(6, 5)
+  teamuser_notstartraidid Int?
+  teamuser_changedt       DateTime?          @db.DateTime(0)
+  invitationdelivery_id   Int?
+  teamuser_new            Boolean            @default(dbgenerated("(b'0')")) @db.Bit(1)
+  Teams                   Teams              @relation(fields: [team_id], references: [team_id])
+  Users                   Users              @relation(fields: [user_id], references: [user_id])
+  TeamLevelDismiss        TeamLevelDismiss[]
+
+  @@index([invitationdelivery_id], name: "invitationdelivery_id")
+  @@index([team_id], name: "team_id")
+  @@index([user_id], name: "user_id")
+}
+
+model Teams {
+  team_id                          Int               @id @default(autoincrement())
+  team_name                        String            @db.VarChar(50)
+  distance_id                      Int
+  team_num                         Int
+  team_usegps                      Boolean
+  team_mapscount                   Int
+  team_registerdt                  DateTime          @db.DateTime(0)
+  team_confirmresult               Int               @default(0)
+  team_hide                        Boolean           @default(false)
+  team_greenpeace                  Int
+  team_moderatorconfirmresult      Boolean           @default(false)
+  level_id                         Int?
+  team_maxlevelpointorderdone      Int?
+  team_result                      DateTime?         @db.Time(0)
+  team_parentid                    Int?
+  team_outofrange                  Boolean?
+  team_importkey                   Int?
+  team_importattempt               Int?
+  team_minlevelpointorderwitherror Int?
+  team_comment                     String?           @db.VarChar(150)
+  team_skippedlevelpoint           String?           @db.VarChar(250)
+  team_waitdt                      DateTime?         @db.DateTime(0)
+  team_donelevelpoint              String?           @db.VarChar(150)
+  invitation_id                    Int?
+  invitation_usedt                 DateTime?         @db.DateTime(0)
+  team_dismiss                     Int?
+  team_minsex                      Int?
+  team_maxsex                      Int?
+  team_minage                      Int?
+  team_maxage                      Int?
+  team_userscount                  Int?
+  Distances                        Distances         @relation(fields: [distance_id], references: [distance_id])
+  TeamLevelPoints                  TeamLevelPoints[]
+  TeamUnionLogs                    TeamUnionLogs[]
+  TeamUsers                        TeamUsers[]
+
+  @@index([distance_id], name: "distance_id")
+  @@index([invitation_id], name: "invitation_id")
+  @@index([team_num], name: "team_num")
+  @@index([team_maxlevelpointorderdone], name: "team_progress")
+  @@index([team_result], name: "team_result")
+}
+
+model UserLinks {
+  userlink_id   Int       @id @default(autoincrement())
+  linktype_id   Int
+  userlink_hide Boolean
+  user_id       Int
+  raid_id       Int
+  userlink_url  String    @db.VarChar(100)
+  userlink_name String    @db.VarChar(100)
+  LinkTypes     LinkTypes @relation(fields: [linktype_id], references: [linktype_id])
+  Raids         Raids     @relation(fields: [raid_id], references: [raid_id])
+  Users         Users     @relation(fields: [user_id], references: [user_id])
+
+  @@index([linktype_id], name: "linktype_id")
+  @@index([raid_id], name: "raid_id")
+  @@index([user_id], name: "user_id")
+}
+
+model UserUnionLogs {
+  userunionlog_id      Int      @id @default(autoincrement())
+  user_id              Int
+  user_parentid        Int
+  union_status         Int
+  userunionlog_dt      DateTime @db.DateTime(0)
+  userunionlog_comment String?  @db.VarChar(100)
+  Users                Users    @relation(fields: [user_id], references: [user_id])
+
+  @@index([user_id], name: "user_id")
+  @@index([user_parentid], name: "user_parentid")
+}
+
+model Users {
+  user_id                       Int                    @id @default(autoincrement())
+  user_name                     String                 @db.VarChar(100)
+  user_email                    String                 @unique @db.VarChar(100)
+  user_phone                    String?                @db.VarChar(25)
+  user_password                 String                 @db.VarChar(255)
+  user_birthyear                Int
+  user_prohibitadd              Boolean                @default(false)
+  user_sessionfornewpassword    String?                @db.VarChar(50)
+  user_sendnewpasswordrequestdt DateTime?              @db.DateTime(0)
+  user_admin                    Boolean                @default(false)
+  user_hide                     Boolean                @default(false)
+  user_registerdt               DateTime?              @db.DateTime(0)
+  user_lastauthorizationdt      DateTime?              @db.DateTime(0)
+  user_sendnewpassworddt        DateTime?              @db.DateTime(0)
+  user_allowsendchangeinfo      Boolean                @default(true)
+  user_allowsendorgmessages     Boolean                @default(false)
+  user_city                     String?                @db.VarChar(50)
+  user_importkey                Int?
+  user_importattempt            Int?
+  userunionlog_id               Int?
+  user_noshow                   Boolean?
+  user_rank                     Decimal?               @db.Decimal(28, 5)
+  user_minraidid                Int?
+  user_maxraidid                Int?
+  user_r6                       Decimal?               @db.Decimal(28, 5)
+  user_noinvitation             Int?
+  user_maxnotstartraidid        Int?
+  user_r6old                    Decimal?               @db.Decimal(28, 5)
+  user_sex                      Int?
+  Devices                       Devices[]
+  InvitationDeliveries          InvitationDeliveries[]
+  Invitations                   Invitations[]
+  RaidDevelopers                RaidDevelopers[]
+  RaidModerators                RaidModerators[]
+  TeamUnionLogs                 TeamUnionLogs[]
+  TeamUsers                     TeamUsers[]
+  UserLinks                     UserLinks[]
+  UserUnionLogs                 UserUnionLogs[]
+
+  @@unique([user_name, user_birthyear, userunionlog_id], name: "user_name")
+}
+
+
+
+enum Logs_logs_level {
+  critical
+  error
+  warning
+  info
+  debug
+  trace
+}
