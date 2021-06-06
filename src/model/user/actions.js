@@ -1,5 +1,7 @@
 const { isAuthenticate } = require('..')
 const { isAdmin } = require('..')
+const Enum = require('enum');
+const userActions = new Enum("view", "create", "edit", "delete", "watchUserName", "watchUserEmail", "watchUserPhone",)
 
 async function checkWatchUserContact(parent, args, context) {
   // user himself or admin
@@ -31,7 +33,17 @@ async function checkWatchUserName(parent, args, context) {
   return {success: true, message: '', code: ''}
 }
 
+async function checkEditUser(parent, args, context) {
+  // user himself or admin
+  if (isAuthenticate(parent, args, context) && (args.id == context.userId || await isAdmin(parent, args, context)))  {
+      return {success: true, message: '', code: ''}
+  }
+  return {success: false, message: 'No permissions', code: 'NO_PERMISSION'}
+}
+
+
 module.exports = {
   checkWatchUserContact,
   checkWatchUserName,
+  checkEditUser,
 }

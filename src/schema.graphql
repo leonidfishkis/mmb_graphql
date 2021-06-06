@@ -15,6 +15,18 @@ type Query {
 type Mutation {
   login(email: String!, password: String!): AuthPayload
   logout: AuthPayload
+  editUserName(id: Int!, name: String!): User,
+  editUserEmail(id: Int!, email: String!): User,
+  editUserPhone(id: Int!, phone: String!): User,
+  editUserCity(id: Int!, city: String!): User,
+  editUserBirthYear(id: Int!, birthYear: Int!): User,
+  editUserSex(id: Int!, sex: Int!): User,
+  hideName(id: Int!, hideName: Boolean!): User,
+  prohibitAddInOtherTeams(id: Int!, prohibitAddInOtherTeams: Boolean!): User,
+  allowSendOrgMessages(id: Int!, allowSendOrgMessages: Boolean!): User,
+  deleteUser(id: Int!): User,
+  requestNewPassword(email: String!): Boolean!,
+  sendNewPassword(email: String!, password: String!): AuthPayload,
 }
 
 type CheckResponse {
@@ -40,6 +52,14 @@ type User {
   name: String!
   email: String!
   phone: String!
+  city: String
+  birthYear: Int
+  sex: Int
+  hideName: Boolean
+  prohibitAddInOtherTeams: Boolean
+  allowSendOrgMessages: Boolean
+  r6: Float
+  noInvitation: Boolean
 }
 
 

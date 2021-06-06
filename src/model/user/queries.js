@@ -1,4 +1,4 @@
-const { checkWatchUserContact, checkWatchUserName } = require('./actions')
+const { checkWatchUserContact, checkWatchUserName, checkEditUser } = require('./actions')
 
 function user(parent, args, context, info) {
   return context.data.users.findUnique({where: {user_id: args.id}})
@@ -41,4 +41,5 @@ module.exports = {
   watchUserPhone,
   checkWatchUserContact,
   checkWatchUserName,
+  checkEditUser,
 }
