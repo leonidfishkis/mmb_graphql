@@ -1,6 +1,7 @@
-const { login } = require('./user/mutations')
+const { login, logout } = require('./user/mutations')
 
   module.exports = {
-    login,
+    login, 
+    logout,
   }
 

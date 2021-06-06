@@ -3,7 +3,14 @@ const jwt = require('jsonwebtoken');
 const APP_SECRET = process.env.APP_SECRET;
 
 function getTokenPayload(token) {
-  return jwt.verify(token, APP_SECRET);
+  try {
+    return jwt.verify(token, APP_SECRET);
+  } catch(err) {
+    if (err.name === 'TokenExpiredError') {
+      throw new Error('Token has expired!');
+    }
+    throw err
+  }
 }
 
 function getUserId(req, authToken) {
@@ -25,7 +32,16 @@ function getUserId(req, authToken) {
   throw new Error('Not authenticated');
 }
 
+function escapeString(string) {
+  // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions#Escaping
+  // https://github.com/benjamingr/RegExp.escape/issues/37
+  return string.replace(/[.*+\-?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
+};
+
+
+
 module.exports = {
   APP_SECRET,
-  getUserId
+  getUserId,
+  escapeString,
 };
