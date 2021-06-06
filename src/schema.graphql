@@ -5,12 +5,22 @@ type Query {
   raids: [Raid!]!
   isAuthenticate: Boolean!
   isAdmin: Boolean!
+  checkWatchUserContact(id: Int!): CheckResponse
+  checkWatchUserName(id: Int!): CheckResponse
+  watchUserName(id: Int!): String!
+  watchUserEmail(id: Int!): String!
+  watchUserPhone(id: Int!): String!
 }
 
 type Mutation {
   login(email: String!, password: String!): AuthPayload
 }
 
+type CheckResponse {
+  success: Boolean!
+  message: String
+  code: String
+}
 
 enum RaidState {
   Create
@@ -28,6 +38,7 @@ type User {
   id: Int!
   name: String!
   email: String!
+  phone: String!
 }
 
 
