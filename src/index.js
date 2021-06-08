@@ -7,15 +7,20 @@ const { PrismaClient, Prisma } = require('@prisma/client');
 const fs = require('fs');
 const path = require('path');
 const { getUserId } = require('./utils');
+const { DateResolver, DateTimeResolver } = require('graphql-scalars');
+
 const Query = require('./model/queries')
 const Mutation = require('./model/mutations')
 const User = require('./model/user/')
 const Raid = require('./model/raid/')
-
+const DateTime = { DateTimeResolver }
+const Date = { DateResolver }
 
 const resolvers = {
   Query,
   Mutation,
+  DateTime,
+  Date,
   User,
   Raid,
 }

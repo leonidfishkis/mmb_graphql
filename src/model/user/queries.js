@@ -1,4 +1,4 @@
-const { checkWatchUserContact, checkWatchUserName, checkEditUser } = require('./actions')
+const { checkWatchUserContact, checkWatchUserName, checkEditUser } = require('./rules')
 
 function user(parent, args, context, info) {
   return context.data.users.findUnique({where: {user_id: args.id}})

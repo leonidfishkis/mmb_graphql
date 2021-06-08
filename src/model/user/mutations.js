@@ -61,7 +61,7 @@ async function logout(parent, args, context, info) {
   }
 }
 
-const { checkEditUser } = require('./actions')
+const { checkEditUser } = require('./rules')
 
 async function editUserName(parent, args, context, info) {
   const check = await checkEditUser(parent, args, context)

@@ -1,6 +1,15 @@
 
 const { isAuthenticate, isAdmin } = require('.')
-const { raid, raids } = require('./raid/queries')
+const { 
+  raid, 
+  raids,
+  getRaidState,
+  checkViewRaid,
+  checkViewFinishPoint,
+  checkHideRaidResults,
+  checkUnHideRaidResults,
+} = require('./raid/queries')
+
 const { 
   user, 
   users,
@@ -16,6 +25,11 @@ module.exports = {
   users,
   raid,
   raids,
+  getRaidState,
+  checkViewRaid,
+  checkViewFinishPoint,
+  checkHideRaidResults,
+  checkUnHideRaidResults,
   isAuthenticate,
   isAdmin,
   checkWatchUserContact,

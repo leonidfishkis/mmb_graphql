@@ -1,7 +1,5 @@
 const { isAuthenticate } = require('..')
 const { isAdmin } = require('..')
-const Enum = require('enum');
-const userActions = new Enum("view", "create", "edit", "delete", "watchUserName", "watchUserEmail", "watchUserPhone",)
 
 async function checkWatchUserContact(parent, args, context) {
   // user himself or admin

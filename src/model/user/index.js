@@ -40,11 +40,11 @@ function prohibitAddInOtherTeams(parent, args, context) {
   return parent.user_prohibitadd
 }
 
-function r6(parent, args, context) {
+function rank(parent, args, context) {
   return parent.user_r6
 }
 
-function noInvitation(parent, args, context) 
+function noRankInvitation(parent, args, context) 
 {
   return parent.user_noinvitation
 }
@@ -62,6 +62,6 @@ module.exports =
   hideName,
   prohibitAddInOtherTeams,
   allowSendOrgMessages,
-  r6,
-  noInvitation,
+  rank,
+  noRankInvitation,
 }

@@ -3,6 +3,11 @@ type Query {
   users: [User!]!
   raid(id: Int!): Raid
   raids: [Raid!]!
+  checkViewRaid(id: Int!): CheckResponse
+  checkViewFinishPoint(id: Int!): CheckResponse
+  checkHideRaidResults(id: Int!): CheckResponse
+  checkUnHideRaidResults(id: Int!): CheckResponse
+  getRaidState(id: Int!): Int!
   isAuthenticate: Boolean!
   isAdmin: Boolean!
   checkWatchUserContact(id: Int!): CheckResponse
@@ -27,6 +32,8 @@ type Mutation {
   deleteUser(id: Int!): User,
   requestNewPassword(email: String!): Boolean!,
   sendNewPassword(email: String!, password: String!): AuthPayload,
+  hideRaidResults(id: Int!): Raid
+  unHideRaidResults(id: Int!): Raid
 }
 
 type CheckResponse {
@@ -36,35 +43,53 @@ type CheckResponse {
 }
 
 enum RaidState {
-  Create
-  Open
-  Close
+  Setup
+  Registration
+  LastCall
+  Boarding
+  Start
+  Finish
+  Release
+  Closed
 }
+
+
 
 type AuthPayload {
   token: String
   user: User
 }
 
-
 type User {
   id: Int!
   name: String!
   email: String!
-  phone: String!
+  phone: String
   city: String
   birthYear: Int
   sex: Int
   hideName: Boolean
   prohibitAddInOtherTeams: Boolean
   allowSendOrgMessages: Boolean
-  r6: Float
-  noInvitation: Boolean
+  rank: Float
+  noRankInvitation: Boolean
 }
 
 
 type Raid {
   id: Int!
   name: String!
+  timeFrame: String!
+  startPoint: String!
+  finishPoint: String!
+  filePrefix: String!
+  endRegistration: Date
+  closeResults: Date
+  mapPrice: Int!
+  readOnlyHoursBeforeStart: Int!
+  teamsLimit: Int!
 }
+
+scalar Date
+scalar DateTime
 
