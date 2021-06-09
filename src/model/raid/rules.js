@@ -20,6 +20,19 @@ async function getRaidState(parent, args, context) {
 
   // check lotto
 
+
+  // check start and boarding time
+  const startDateTime = currentDateTime
+  const hoursBeforeStart = parseInt(raid.raid_readonlyhoursbeforestart)
+  const boardingDateTime = startDateTime.setHours(startDateTime.getHours() - hoursBeforeStart);
+  if (currentDateTime < boardingDateTime) {
+    return 3
+  }
+
+  if (currentDateTime < startDateTime) {
+    return 4
+  }
+
   //  check start and finish time from raidlevelpoints
 
   const noShowResults = raid.raid_noshowresult 
@@ -45,7 +58,7 @@ async function checkViewRaid(parent, args, context) {
   return {success: false, message: 'No permissions', code: 'NO_PERMISSION'}
 }
 
-async function checkViewFinishPoint(parent, args, context) {
+async function checkViewRaidFinishPoint(parent, args, context) {
   // admin - always, user - if in state 'Finish' or later 
   if (await isAdmin(parent, args, context))  {
       return {success: true, message: '', code: ''}
@@ -80,7 +93,7 @@ module.exports = {
   RaidState,
   getRaidState,
   checkViewRaid,
-  checkViewFinishPoint,
+  checkViewRaidFinishPoint,
   checkHideRaidResults,
   checkUnHideRaidResults,
 }

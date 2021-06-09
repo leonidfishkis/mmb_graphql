@@ -2,7 +2,7 @@ const {
   RaidState,
   getRaidState,
   checkViewRaid, 
-  checkViewFinishPoint,
+  checkViewRaidFinishPoint,
   checkHideRaidResults,
   checkUnHideRaidResults,
 } = require('./rules')
@@ -37,7 +37,7 @@ module.exports = {
   RaidState,
   getRaidState,
   checkViewRaid,
-  checkViewFinishPoint,
+  checkViewRaidFinishPoint,
   checkHideRaidResults,
   checkUnHideRaidResults,
 }
