@@ -4,9 +4,10 @@ type Query {
   raid(id: Int!): Raid
   raids: [Raid!]!
   checkViewRaid(id: Int!): CheckResponse
-  checkViewFinishPoint(id: Int!): CheckResponse
+  checkViewRaidFinishPoint(id: Int!): CheckResponse
   checkHideRaidResults(id: Int!): CheckResponse
   checkUnHideRaidResults(id: Int!): CheckResponse
+  checkCreateRaid: CheckResponse
   getRaidState(id: Int!): Int!
   isAuthenticate: Boolean!
   isAdmin: Boolean!
@@ -26,14 +27,15 @@ type Mutation {
   editUserCity(id: Int!, city: String!): User,
   editUserBirthYear(id: Int!, birthYear: Int!): User,
   editUserSex(id: Int!, sex: Int!): User,
-  hideName(id: Int!, hideName: Boolean!): User,
-  prohibitAddInOtherTeams(id: Int!, prohibitAddInOtherTeams: Boolean!): User,
-  allowSendOrgMessages(id: Int!, allowSendOrgMessages: Boolean!): User,
+  hideUserName(id: Int!, hideName: Boolean!): User,
+  prohibitAddUserInOtherTeams(id: Int!, prohibitAddInOtherTeams: Boolean!): User,
+  allowSendUserOrgMessages(id: Int!, allowSendOrgMessages: Boolean!): User,
   deleteUser(id: Int!): User,
   requestNewPassword(email: String!): Boolean!,
   sendNewPassword(email: String!, password: String!): AuthPayload,
   hideRaidResults(id: Int!): Raid
   unHideRaidResults(id: Int!): Raid
+  createRaid(name: String!, timeFrame: String!, filePrefix: String): Raid
 }
 
 type CheckResponse {

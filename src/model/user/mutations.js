@@ -123,7 +123,7 @@ async function editUserSex(parent, args, context, info) {
   return await context.data.users.update({where: {user_id: args.id}, data: {user_sex: args.sex}})
 }
 
-async function hideName(parent, args, context, info) {
+async function hideUserName(parent, args, context, info) {
   const check = await checkEditUser(parent, args, context)
   if (!check.success)  {
     throw new Error(check.message);
@@ -133,7 +133,7 @@ async function hideName(parent, args, context, info) {
   return await context.data.users.update({where: {user_id: args.id}, data: {user_noshow: args.hideName}})
 }
 
-async function prohibitAddInOtherTeams(parent, args, context, info) {
+async function prohibitAddUserInOtherTeams(parent, args, context, info) {
   const check = await checkEditUser(parent, args, context)
   if (!check.success)  {
     throw new Error(check.message);
@@ -143,7 +143,7 @@ async function prohibitAddInOtherTeams(parent, args, context, info) {
   return await context.data.users.update({where: {user_id: args.id}, data: {user_prohibitadd: args.prohibitAddInOtherTeams}})
 }
 
-async function allowSendOrgMessages(parent, args, context, info) {
+async function allowSendUserOrgMessages(parent, args, context, info) {
   const check = await checkEditUser(parent, args, context)
   if (!check.success)  {
     throw new Error(check.message);
@@ -186,9 +186,9 @@ module.exports = {
   editUserCity,
   editUserBirthYear,
   editUserSex,
-  hideName,
-  prohibitAddInOtherTeams,
-  allowSendOrgMessages,
+  hideUserName,
+  prohibitAddUserInOtherTeams,
+  allowSendUserOrgMessages,
   deleteUser,
   requestNewPassword,
   sendNewPassword,

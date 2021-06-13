@@ -5,10 +5,12 @@ const {
   checkViewRaidFinishPoint,
   checkHideRaidResults,
   checkUnHideRaidResults,
+  checkCreateRaid, 
 } = require('./rules')
 
 async function raid(parent, args, context, info) {
-  if (!(await checkViewRaid(parent, args, context)).success) {
+  const check = await checkViewRaid(parent, args, context) 
+  if (!check.success) {
     return null;
   } 
   return await context.data.raids.findUnique({where: {raid_id: args.id}})
@@ -40,4 +42,5 @@ module.exports = {
   checkViewRaidFinishPoint,
   checkHideRaidResults,
   checkUnHideRaidResults,
+  checkCreateRaid, 
 }

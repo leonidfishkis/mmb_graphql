@@ -7,13 +7,20 @@ const {
   editUserCity,
   editUserBirthYear,
   editUserSex,
-  hideName,
-  prohibitAddInOtherTeams,
-  allowSendOrgMessages,
+  hideUserName,
+  prohibitAddUserInOtherTeams,
+  allowSendUserOrgMessages,
   deleteUser,
   requestNewPassword,
   sendNewPassword,
  } = require('./user/mutations')
+
+ const { 
+  hideRaidResults,
+  unHideRaidResults,
+  createRaid,
+ } = require('./raid/mutations')
+
 
   module.exports = {
     login, 
@@ -24,11 +31,14 @@ const {
     editUserCity,
     editUserBirthYear,
     editUserSex,
-    hideName,
-    prohibitAddInOtherTeams,
-    allowSendOrgMessages,
+    hideUserName,
+    prohibitAddUserInOtherTeams,
+    allowSendUserOrgMessages,
     deleteUser,
     requestNewPassword,
     sendNewPassword,
-  }
+    hideRaidResults,
+    unHideRaidResults,
+    createRaid,
+  } 
 

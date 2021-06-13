@@ -9,6 +9,7 @@ const {
   checkViewRaidFinishPoint,
   checkHideRaidResults,
   checkUnHideRaidResults,
+  checkCreateRaid,
 } = require('./raid/queries')
 
 const { 
@@ -31,6 +32,7 @@ module.exports = {
   checkViewRaidFinishPoint,
   checkHideRaidResults,
   checkUnHideRaidResults,
+  checkCreateRaid,
   isAuthenticate,
   isAdmin,
   checkWatchUserContact,

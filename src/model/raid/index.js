@@ -25,7 +25,7 @@ function startPoint(parent, args, context)
 
 async function finishPoint(parent, args, context) 
 {
-  if (!(await checkViewFinishPoint(parent, { id: parent.raid_id }, context)).success) {
+  if (!(await checkViewRaidFinishPoint(parent, { id: parent.raid_id }, context)).success) {
     return ''
   }    
   return parent.raid_finishpoint
